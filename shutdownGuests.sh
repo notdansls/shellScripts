@@ -19,6 +19,10 @@
 # |      |            |   * Fixed bugs (if statements)                                     | notdansls |
 # |      |            |   * Added descriptive comments                                     |           |
 # +------+------------+--------------------------------------------------------------------+-----------+
+# | 0.60 | 2021-03-14 | Fix to Issue001 (No guests are running, nothing to do - 3x gues...)|           |
+# |      |            |   * Line 34 Position 22                                            | notdansls |
+# |      |            |      - Replaced '-gt' with '>'                                     |           |
+# +------+------------+--------------------------------------------------------------------+-----------+
 
 
 
@@ -31,7 +35,7 @@ listGuests(){
 	intAG="${activeGuests[@]}"
 	x=1
 	# Check if there are any active virtual machines running
-	if [[ $intAG -gt 0 ]]; then
+	if [[ $intAG > 0 ]]; then # issue001: Line 34 Pos 22: replace '-gt' with '>'
 		for i in "${activeGuests[@]}"; do
 			killGuest $i
 			x=$(($x + 1))			
