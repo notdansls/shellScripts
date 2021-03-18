@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# test comment - for signing commit (git commit -S -m "xxx"
+
 # This will be a script to gracefully shutdown any running VM's when a shutdown
 # has been initiated by the host system
 
