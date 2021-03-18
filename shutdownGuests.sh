@@ -5,44 +5,50 @@
 
 # Change log
 # +------+------------+--------------------------------------------------------------------+-----------+
-# | ver  |    Date    | Description                                                        |   Auth    |
-# +------+------------+--------------------------------------------------------------------+-----------+
-# | 0.01 | 2021-03-14 | Initial Version                                                    |           |
-# |      |            |   * Testing stage                                                  | notdansls |
-# |      |            |   * take output from virsh list to array                           |           |
-# +------+------------+--------------------------------------------------------------------+-----------+
-# | 0.50 | 2021-03-15 | First working version                                              |           |
-# |      |            |   * Created functions to simplify code                             | notdansls |
-# |      |            |   * removed echo debugging                                         |           |
-# +------+------------+--------------------------------------------------------------------+-----------+
-# | 0.55 | 2021-03-16 | Second working version                                             |           |
-# |      |            |   * Fixed bugs (if statements)                                     | notdansls |
-# |      |            |   * Added descriptive comments                                     |           |
-# +------+------------+--------------------------------------------------------------------+-----------+
-# | 0.60 | 2021-03-16 | Fix to Issue001 (No guests are running, nothing to do - 3x gues...)|           |
-# |      |            |   * Line 34 Position 22                                            | notdansls |
-# |      |            |      - Replaced '-gt' with '>'                                     |           |
-# +------+------------+--------------------------------------------------------------------+-----------+
-# | 0.70 | 2021-03-17 | Include function to check if the guests have shutdown properly     |           |
-# |      |            |   * Addition of verifyShutdown function (line 64)                  | notdansls |
-# |      |            |   * Addition of timer to show elapsed time of shutdown process     |           |
-# |      |            |   * Addition of Todo log                                           |           |
-# +------+------------+--------------------------------------------------------------------+-----------+
-# | 0.75 | 2021-03-18 | Include function to log actions                                    |           |
-# | 0.70 |            |   * Check if the log file exists, if not create it                 |           |
-# | 0.70 |            |   * Take input from functions and write it to a file               |           |
-# +------+------------+--------------------------------------------------------------------+-----------+
+# | ver  |    Date    | Description                                                        |   Auth    ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
+# | 0.01 | 2021-03-14 | Initial Version                                                    |           ||
+# |      |            |   * Testing stage                                                  | notdansls ||
+# |      |            |   * take output from virsh list to array                           |           ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
+# | 0.50 | 2021-03-15 | First working version                                              |           ||
+# |      |            |   * Created functions to simplify code                             | notdansls ||
+# |      |            |   * removed echo debugging                                         |           ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
+# | 0.55 | 2021-03-16 | Second working version                                             |           ||
+# |      |            |   * Fixed bugs (if statements)                                     | notdansls ||
+# |      |            |   * Added descriptive comments                                     |           ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
+# | 0.60 | 2021-03-16 | Fix to Issue001 (No guests are running, nothing to do - 3x gues...)|           ||
+# |      |            |   * Line 34 Position 22                                            | notdansls ||
+# |      |            |      - Replaced '-gt' with '>'                                     |           ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
+# | 0.70 | 2021-03-17 | Include function to check if the guests have shutdown properly     |           ||
+# |      |            |   * Addition of verifyShutdown function (line 64)                  | notdansls ||
+# |      |            |   * Addition of timer to show elapsed time of shutdown process     |           ||
+# |      |            |   * Addition of Todo log                                           |           ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
+# | 0.75 | 2021-03-18 | Include function to log actions                                    |           ||
+# |      |            |   * Check if the log file exists, if not create it                 | notdansls ||
+# |      |            |   * Take input from functions and write it to a file               |           ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
+# | 0.80 | 2021-03-18 | Modify killGuest to write out to the log when shutting down each   |           ||
+# |      |            | guest.                                                             | notdansls ||
+# |      |            |                                                                    |           ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
+#  -----------------------------------------------------------------------------------------------------+
 #
 # Todo log
 # +------+---------------------------------------------------------------------------------------------+
-# | Status |    Description                                                                            |
-# +------+---------------------------------------------------------------------------------------------+
-# | [ 00 ] |    Status 00 - Idea, plan - Planning stage, code - coding and testing                     |
-# +--------+-------------------------------------------------------------------------------------------+
-# | [test] |    Create a function that will log output to flat text file for review                    |
-# +--------+-------------------------------------------------------------------------------------------+
-# | [ 00 ] |    Modify code to make the script work as a shutdown script                               |
-# +--------+-------------------------------------------------------------------------------------------+
+# | Status |    Description                                                                            ||
+# +------+---------------------------------------------------------------------------------------------+|
+# | [ 00 ] |    Status 00 - Idea, plan - Planning stage, code - coding and testing                     ||
+# +--------+-------------------------------------------------------------------------------------------+|
+# | [done] |    Create a function that will log output to flat text file for review                    ||
+# +--------+-------------------------------------------------------------------------------------------+|
+# | [ 00 ] |    Modify code to make the script work as a shutdown script                               ||
+# +--------+-------------------------------------------------------------------------------------------+|
+#  -----------------------------------------------------------------------------------------------------+
 
 # Functions
 # ---------
@@ -68,8 +74,10 @@ listGuests(){
 
 
 killGuest(){
-	# Send shutdown string to the guess
-	sudo virsh shutdown $1
+	# Write log file before ending shutdown command then issue shutdown command
+	writeLog "Domain '$1' is shutting down"
+	sudo virsh shutdown $1 >> /dev/null
+
 }
 
 initiateShutdown(){
