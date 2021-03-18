@@ -39,7 +39,7 @@
 # +------+---------------------------------------------------------------------------------------------+
 # | [ 00 ] |    Status 00 - Idea, plan - Planning stage, code - coding and testing                     |
 # +--------+-------------------------------------------------------------------------------------------+
-# | [code] |    Create a function that will log output to flat text file for review                    |
+# | [test] |    Create a function that will log output to flat text file for review                    |
 # +--------+-------------------------------------------------------------------------------------------+
 # | [ 00 ] |    Modify code to make the script work as a shutdown script                               |
 # +--------+-------------------------------------------------------------------------------------------+
@@ -72,8 +72,7 @@ killGuest(){
 	sudo virsh shutdown $1
 }
 
-
-verifyShutdown(){
+initiateShutdown(){
 	# This function will verify that the shutdown is complete
 
 	listGuests
@@ -86,15 +85,15 @@ verifyShutdown(){
 		then
 			if [[ $intReturn -eq 1 ]]
 			then
-				echo "$intReturn guest is still shutting down, sleeping for 10 seconds..."
+				writeLog "$intReturn guest is still shutting down. Script will sleeping for 10 seconds"
 			else
-				echo "$intReturn guests are still shutting down, sleeping for 10 seconds..."
+				writeLog "$intReturn guests are still shutting down. Script will sleep for 10 seconds"
 			fi
 			sleep 10s
 			runningGuests=( $(sudo virsh list --name) )
 			intReturn="${#runningGuests[@]}"
 		else
-			break
+			return 1
 		fi
 	done
 }
@@ -113,7 +112,6 @@ writeLog(){
 	# Check to see if the log file exists, if not create it.
 	if [ ! -f $logFile ];
 	then
-		echo "Confirming file does indeed not exist..."
 		touch $logFile
 		printf "Time\tuptime\tScriptTime\tDescription\n" >> $logFile
 		printf "$currentTime\t$upTime\t$scriptTime\tLogfile does not exist. Created.\n" >> $logFile
@@ -130,19 +128,21 @@ writeLog(){
 # get start time
 SECONDS=0
 
-# This somewhat makes it redundant, verify shutdown...
-verifyShutdown
+# This is where it all really begins, start shutting everything down
+initiateShutdown
 
+# Take the return value and convert it to a variable
 intReturn=$?
 
+# Decide if guests where shutdown or not.
 if [[ $intReturn -eq 0 ]]
 then
-	echo "Guests where running and have been asked to shutdown."
+	writeLog "Guests have been sucessfully shutdown"
 elif [[ $intReturn -eq 1 ]]
 then
-	echo "No guests are running, nothing to do."
+	writeLog "No guests are running"
 fi
 
-# get fin time and echo it to console
+# Wrapping up running of the scrip. Get the elapesed time and pipe it out to the log file
 elapsedTime=$SECONDS
-echo "$(($elapsedTime / 60 ))m $(($elapsedTime % 60 ))s"
+writeLog  "Script ending after $(($elapsedTime / 60 ))m $(($elapsedTime % 60 ))s"
