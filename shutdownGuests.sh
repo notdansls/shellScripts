@@ -38,6 +38,10 @@
 # |      |            | guest.                                                             | notdansls ||
 # |      |            |                                                                    |           ||
 # +------+------------+--------------------------------------------------------------------+-----------+|
+# | 0.85 | 2021-03-18 | Remove mentions of sudo now that a CMND alias has been added to    |           ||
+# |      |            | sudoers file                                                       | notdansls ||
+# |      |            |                                                                    |           ||
+# +------+------------+--------------------------------------------------------------------+-----------+|
 #  -----------------------------------------------------------------------------------------------------+
 #
 # Todo log
@@ -48,7 +52,7 @@
 # +--------+-------------------------------------------------------------------------------------------+|
 # | [done] |    Create a function that will log output to flat text file for review                    ||
 # +--------+-------------------------------------------------------------------------------------------+|
-# | [ 00 ] |    Modify code to make the script work as a shutdown script                               ||
+# | [test] |    Modify code to make the script work as a shutdown script                               ||
 # +--------+-------------------------------------------------------------------------------------------+|
 #  -----------------------------------------------------------------------------------------------------+
 
@@ -56,7 +60,7 @@
 # ---------
 listGuests(){
 	# Get a list of running virtual machines
-	activeGuests=( $(sudo virsh list --name) )
+	activeGuests=( $(virsh list --name) )
 	intAG="${activeGuests[@]}"
 	intClientCount="${#activeGuests[@]}"
 	x=1
@@ -78,7 +82,7 @@ listGuests(){
 killGuest(){
 	# Write log file before ending shutdown command then issue shutdown command
 	writeLog "Domain '$1' is shutting down"
-	sudo virsh shutdown $1 >> /dev/null
+	virsh shutdown $1 >> /dev/null
 
 }
 
@@ -100,7 +104,7 @@ initiateShutdown(){
 				writeLog "$intReturn guests are still shutting down. Script will sleep for 10 seconds"
 			fi
 			sleep 10s
-			runningGuests=( $(sudo virsh list --name) )
+			runningGuests=( $(virsh list --name) )
 			intReturn="${#runningGuests[@]}"
 		else
 			return 1
