@@ -39,16 +39,15 @@
 # +------+---------------------------------------------------------------------------------------------+
 # | [ 00 ] |    Status 00 - Idea, plan - Planning stage, code - coding and testing                     |
 # +--------+-------------------------------------------------------------------------------------------+
-# | [plan] |    Create a function that will log output to flat text file for review                    |
+# | [code] |    Create a function that will log output to flat text file for review                    |
 # +--------+-------------------------------------------------------------------------------------------+
 # | [ 00 ] |    Modify code to make the script work as a shutdown script                               |
 # +--------+-------------------------------------------------------------------------------------------+
 
 # Functions
 # ---------
-
 listGuests(){
-	## Get a list of running virtual machines
+	# Get a list of running virtual machines
 	activeGuests=( $(sudo virsh list --name) )
 	intAG="${activeGuests[@]}"
 	intClientCount="${#activeGuests[@]}"
@@ -69,19 +68,13 @@ listGuests(){
 
 
 killGuest(){
-	# take vmname
-	# preface it with virsh shutdown xxx
-	# return true
+	# Send shutdown string to the guess
 	sudo virsh shutdown $1
-        #return 0
 }
 
 
 verifyShutdown(){
 	# This function will verify that the shutdown is complete
-	# if guests are down, the script will terminate with exit code 0
-	# or re-initiate the shutdown (This might not be so graceful
-	# will need to revisit perhaps.
 
 	listGuests
 	
@@ -110,12 +103,24 @@ verifyShutdown(){
 writeLog(){
 	# Function to log writes to a file
 
-	# First, we will check if the logfile exists
+	# Set variables used in log file creation	
+	logFile=/var/log/guestShutdown.log
+	logText=$1
+	currentTime=( "$(date +%H:%M:%S)" )
+	upTime=( "$(uptime -p)" )
+	scriptTime=( "$(($SECONDS / 60 ))m $(($SECONDS % 60 ))s" )
 
-	# Next we will write the file.
-
-	# Need to deciede if the file is to be written one line at a time or if we are going to
-	# write an event at a time. 
+	# Check to see if the log file exists, if not create it.
+	if [ ! -f $logFile ];
+	then
+		echo "Confirming file does indeed not exist..."
+		touch $logFile
+		printf "Time\tuptime\tScriptTime\tDescription\n" >> $logFile
+		printf "$currentTime\t$upTime\t$scriptTime\tLogfile does not exist. Created.\n" >> $logFile
+	fi
+	
+	# Write the log entry to file
+	printf "$currentTime\t$upTime\t$scriptTime\t$logText.\n" >> $logFile
 }
 
 
@@ -129,7 +134,6 @@ SECONDS=0
 verifyShutdown
 
 intReturn=$?
-# echo $intReturn
 
 if [[ $intReturn -eq 0 ]]
 then
