@@ -28,6 +28,10 @@
 # |      |            |   * Addition of timer to show elapsed time of shutdown process     |           |
 # |      |            |   * Addition of Todo log                                           |           |
 # +------+------------+--------------------------------------------------------------------+-----------+
+# | 0.75 | 2021-03-18 | Include function to log actions                                    |           |
+# | 0.70 |            |   * Check if the log file exists, if not create it                 |           |
+# | 0.70 |            |   * Take input from functions and write it to a file               |           |
+# +------+------------+--------------------------------------------------------------------+-----------+
 #
 # Todo log
 # +------+---------------------------------------------------------------------------------------------+
@@ -35,7 +39,7 @@
 # +------+---------------------------------------------------------------------------------------------+
 # | [ 00 ] |    Status 00 - Idea, plan - Planning stage, code - coding and testing                     |
 # +--------+-------------------------------------------------------------------------------------------+
-# | [ 00 ] |    Create a function that will log output to flat text file for review                    |
+# | [plan] |    Create a function that will log output to flat text file for review                    |
 # +--------+-------------------------------------------------------------------------------------------+
 # | [ 00 ] |    Modify code to make the script work as a shutdown script                               |
 # +--------+-------------------------------------------------------------------------------------------+
@@ -102,6 +106,17 @@ verifyShutdown(){
 	done
 }
 
+
+writeLog(){
+	# Function to log writes to a file
+
+	# First, we will check if the logfile exists
+
+	# Next we will write the file.
+
+	# Need to deciede if the file is to be written one line at a time or if we are going to
+	# write an event at a time. 
+}
 
 
 # Code
