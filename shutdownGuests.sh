@@ -29,21 +29,25 @@
 # |      |            |   * Addition of Todo log                                           |           |
 # +------+------------+--------------------------------------------------------------------+-----------+
 # | 0.75 | 2021-03-18 | Include function to log actions                                    |           |
-# | 0.70 |            |   * Check if the log file exists, if not create it                 |           |
-# | 0.70 |            |   * Take input from functions and write it to a file               |           |
+# |      |            |   * Check if the log file exists, if not create it                 | notdansls |
+# |      |            |   * Take input from functions and write it to a file               |           |
+# +------+------------+--------------------------------------------------------------------+-----------+
+# | 0.80 | 2021-03-18 | Modify killGuest to write out to the log when shutting down each   |           |
+# |      |            | guest.                                                             | notdansls |
+# |      |            |                                                                    |           |
 # +------+------------+--------------------------------------------------------------------+-----------+
 #
 # Todo log
 # +------+---------------------------------------------------------------------------------------------+
-# | Status |    Description                                                                            |
-# +------+---------------------------------------------------------------------------------------------+
-# | [ 00 ] |    Status 00 - Idea, plan - Planning stage, code - coding and testing                     |
-# +--------+-------------------------------------------------------------------------------------------+
-# | [test] |    Create a function that will log output to flat text file for review                    |
-# +--------+-------------------------------------------------------------------------------------------+
-# | [ 00 ] |    Modify code to make the script work as a shutdown script                               |
-# +--------+-------------------------------------------------------------------------------------------+
-
+# | Status |    Description                                                                            ||
+# +------+---------------------------------------------------------------------------------------------+|
+# | [ 00 ] |    Status 00 - Idea, plan - Planning stage, code - coding and testing                     ||
+# +--------+-------------------------------------------------------------------------------------------+|
+# | [test] |    Create a function that will log output to flat text file for review                    ||
+# +--------+-------------------------------------------------------------------------------------------+|
+# | [ 00 ] |    Modify code to make the script work as a shutdown script                               ||
+# +--------+-------------------------------------------------------------------------------------------+|
+#  -----------------------------------------------------------------------------------------------------+
 # Functions
 # ---------
 listGuests(){
@@ -68,8 +72,10 @@ listGuests(){
 
 
 killGuest(){
-	# Send shutdown string to the guess
-	sudo virsh shutdown $1
+	# Write log file before ending shutdown command then issue shutdown command
+	writeLog "Domain '$1' is shutting down"
+	sudo virsh shutdown $1 >> /dev/null
+
 }
 
 initiateShutdown(){
